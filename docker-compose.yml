@@ -1,11 +1,3 @@
-#version: "3"
-#services:
-#  bagsoptimiser_app:
-#    image: bagsoptimiser_app:latest
-#    container_name: bagsoptimiser_app
-#    ports:
-#      - 8084:8080
-
 app:
   build: .
   dockerfile: ./Dockerfile
