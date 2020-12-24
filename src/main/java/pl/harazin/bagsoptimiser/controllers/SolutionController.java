@@ -8,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.harazin.bagsoptimiser.model.Product;
-import pl.harazin.bagsoptimiser.services.BruteForce;
-import pl.harazin.bagsoptimiser.services.Dynamic;
-import pl.harazin.bagsoptimiser.services.Genetic;
-import pl.harazin.bagsoptimiser.services.Greedy;
+import pl.harazin.bagsoptimiser.model.Response;
+import pl.harazin.bagsoptimiser.services.*;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -26,26 +25,31 @@ public class SolutionController {
     private Greedy greedy;
 
     @RequestMapping(value = "/solution/bruteForce", method = RequestMethod.POST)
-    public List<List<Product>> getBruteForce(@RequestBody List<Product> inputList) {
-
-        return bruteForce.solution(inputList);
+    public Response getBruteForce(@RequestBody List<Product> inputList) {
+        return getResponse(inputList, bruteForce);
     }
 
-    @RequestMapping(value = "/solution/dynamic", method = RequestMethod.GET)
-    public String getDynamic() {
-
-        return "dynamic.solution()";
+    @RequestMapping(value = "/solution/dynamic", method = RequestMethod.POST)
+    public Response getDynamic(@RequestBody List<Product> inputList) {
+        return getResponse(inputList, dynamic);
     }
 
-    @RequestMapping(value = "/solution/genetic", method = RequestMethod.GET)
-    public String getGenetic() {
-
-        return "genetic.solution()";
+    @RequestMapping(value = "/solution/genetic", method = RequestMethod.POST)
+    public Response getGenetic(@RequestBody List<Product> inputList) {
+        return getResponse(inputList, genetic);
     }
 
-    @RequestMapping(value = "/solution/greedy", method = RequestMethod.GET)
-    public String getGreedy() {
+    @RequestMapping(value = "/solution/greedy", method = RequestMethod.POST)
+    public Response getGreedy(@RequestBody List<Product> inputList) {
+        return getResponse(inputList, greedy);
+    }
 
-        return "greedy.solution()";
+    private Response getResponse(List<Product> inputList, Algorithm solver)
+    {
+        Date startTime = new Date();
+        List<List<Product>> solution = solver.solution(inputList);
+        Date endTime = new Date();
+        float timeElapsed = endTime.getTime() - startTime.getTime();
+        return new Response(solution, timeElapsed);
     }
 }
