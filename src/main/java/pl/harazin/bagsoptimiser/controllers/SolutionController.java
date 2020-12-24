@@ -44,8 +44,7 @@ public class SolutionController {
         return getResponse(inputList, greedy);
     }
 
-    private Response getResponse(List<Product> inputList, Algorithm solver)
-    {
+    private Response getResponse(List<Product> inputList, Algorithm solver) {
         Date startTime = new Date();
         List<List<Product>> solution = solver.solution(inputList);
         Date endTime = new Date();
