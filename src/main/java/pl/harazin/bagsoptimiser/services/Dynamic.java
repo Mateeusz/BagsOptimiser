@@ -53,9 +53,9 @@ public class Dynamic implements Algorithm {
             int element = (int) object;
             if (element <= maxSum) {
                 newSet.add(element);
-            }
-            if (element + value <= maxSum) {
-                newSet.add(element + value);
+                if (element + value <= maxSum) {
+                    newSet.add(element + value);
+                }
             }
         }
 
