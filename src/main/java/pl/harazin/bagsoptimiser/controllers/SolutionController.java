@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.harazin.bagsoptimiser.model.Product;
 import pl.harazin.bagsoptimiser.model.Response;
 import pl.harazin.bagsoptimiser.services.*;
+import pl.harazin.bagsoptimiser.services.genetic.Genetic;
 
 import java.util.Date;
 import java.util.List;
