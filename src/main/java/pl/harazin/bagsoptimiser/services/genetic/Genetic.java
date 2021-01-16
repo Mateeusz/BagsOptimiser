@@ -1,5 +1,6 @@
 package pl.harazin.bagsoptimiser.services.genetic;
 
+import lombok.val;
 import org.springframework.stereotype.Service;
 import pl.harazin.bagsoptimiser.model.Product;
 import pl.harazin.bagsoptimiser.services.Algorithm;
@@ -12,11 +13,9 @@ public class Genetic implements Algorithm {
 
     public static int POPULATION = 100;
     public static int REPRODUCTIVE_POPULATION = 30;
+    public static int REPRODUCTIONS = 1000;
     public static int GENERATIONS = 10;
     public static double MUTATION_PROBABILITY = 0.01;
-    public static int GBEST;
-    public static int MAX_TIME = 60 * 1000;
-
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
 
@@ -29,19 +28,51 @@ public class Genetic implements Algorithm {
     }
 
     private List<List<Product>> runAlgorithm(List<List<List<Product>>> population, List<Product> inputProducts) {
-
-
+        Random rand = new Random();
+        sortPopulation(population);
         for (int i = 0; i < GENERATIONS; i++) {
-            fitnessPopulation(population);
+
 
             List<List<List<Product>>> reproductivePopulation = new ArrayList<>(population.subList(0, REPRODUCTIVE_POPULATION - 1));
 
-            onePointCrossover(population.get(0), population.get(60), inputProducts);
+            for (int j = 0; j< REPRODUCTIONS; j++) {
+                val parent1 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
+                val parent2 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
+                population.addAll(onePointCrossover(parent1,parent2,inputProducts));
+            }
+            sortPopulation(population);
+            population = checkPopulation(population);
+            population = population.subList(0, POPULATION);
 
 
         }
 
-        return null;
+
+        return population.get(0);
+    }
+
+    private List<List<List<Product>>> checkPopulation(List<List<List<Product>>> population) {
+        List<List<List<Product>>> newPopulation = new ArrayList<>(population);
+        for(List<List<Product>> ind : population){
+
+
+            for(List<Product> bag : ind){
+                int weight = 0;
+                int capacity = 0;
+
+                for (Product p : bag){
+                    weight += p.getWeight();
+                    capacity += p.getCapacity();
+                }
+
+                if (weight > Algorithm.BAG_WEIGHT || capacity > Algorithm.BAG_CAPACITY){
+                    newPopulation.remove(ind);
+                    break;
+                }
+
+            }
+        }
+        return  newPopulation;
     }
 
     private List<List<List<Product>>> onePointCrossover(List<List<Product>> parent1, List<List<Product>> parent2, List<Product> inputProducts) {
@@ -102,7 +133,7 @@ public class Genetic implements Algorithm {
         return set;
     }
 
-    private static <T> void fitnessPopulation(List<List<T>> superList) {
+    private static <T> void sortPopulation(List<List<T>> superList) {
         Collections.sort(superList, new Comparator<List<T>>() {
             @Override
             public int compare(List<T> o1, List<T> o2) {
