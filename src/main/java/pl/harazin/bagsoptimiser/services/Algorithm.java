@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface Algorithm {
 
-    int BAG_WEIGHT = 5000;
-    int BAG_CAPACITY = 3000;
+    int BAG_WEIGHT = 10000;
+    int BAG_CAPACITY = 6000;
 
     List<List<Product>> solution(List<Product> inputProducts);
 
