@@ -15,7 +15,8 @@ public class Genetic implements Algorithm {
     public static int REPRODUCTIVE_POPULATION = 30;
     public static int REPRODUCTIONS = 1000;
     public static int GENERATIONS = 10;
-    public static double MUTATION_PROBABILITY = 0.01;
+    public static double MUTATION_PROBABILITY = 0.001;
+
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
 
@@ -34,15 +35,33 @@ public class Genetic implements Algorithm {
 
 
             List<List<List<Product>>> reproductivePopulation = new ArrayList<>(population.subList(0, REPRODUCTIVE_POPULATION - 1));
-
-            for (int j = 0; j< REPRODUCTIONS; j++) {
+            //reproduction
+            for (int j = 0; j < REPRODUCTIONS; j++) {
                 val parent1 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
                 val parent2 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
-                population.addAll(onePointCrossover(parent1,parent2,inputProducts));
+                population.addAll(onePointCrossover(parent1, parent2, inputProducts));
             }
+            //mutation
+            for (List<List<Product>> ind : population) {
+                if (rand.nextDouble() <= MUTATION_PROBABILITY) {
+                    List<Product> randomBag1 = ind.get(rand.nextInt(ind.size()));
+                    List<Product> randomBag2 = ind.get(rand.nextInt(ind.size()));
+
+                    Product product1 = randomBag1.get(rand.nextInt(randomBag1.size()));
+                    Product product2 = randomBag2.get(rand.nextInt(randomBag2.size()));
+
+                    randomBag2.add(product1);
+                    randomBag1.add(product2);
+                    randomBag2.remove(product2);
+                    randomBag1.remove(product1);
+                }
+
+            }
+
             sortPopulation(population);
             population = checkPopulation(population);
-            population = population.subList(0, POPULATION);
+            if (population.size() > POPULATION)
+                population = population.subList(0, POPULATION);
 
 
         }
@@ -53,26 +72,26 @@ public class Genetic implements Algorithm {
 
     private List<List<List<Product>>> checkPopulation(List<List<List<Product>>> population) {
         List<List<List<Product>>> newPopulation = new ArrayList<>(population);
-        for(List<List<Product>> ind : population){
+        for (List<List<Product>> ind : population) {
 
 
-            for(List<Product> bag : ind){
+            for (List<Product> bag : ind) {
                 int weight = 0;
                 int capacity = 0;
 
-                for (Product p : bag){
+                for (Product p : bag) {
                     weight += p.getWeight();
                     capacity += p.getCapacity();
                 }
 
-                if (weight > Algorithm.BAG_WEIGHT || capacity > Algorithm.BAG_CAPACITY){
+                if (weight > Algorithm.BAG_WEIGHT || capacity > Algorithm.BAG_CAPACITY) {
                     newPopulation.remove(ind);
                     break;
                 }
 
             }
         }
-        return  newPopulation;
+        return newPopulation;
     }
 
     private List<List<List<Product>>> onePointCrossover(List<List<Product>> parent1, List<List<Product>> parent2, List<Product> inputProducts) {
