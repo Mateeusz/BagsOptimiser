@@ -11,7 +11,6 @@ import java.util.List;
 public class Genetic implements Algorithm {
 
     public static int POPULATION = 100;
-    public static int MAX_POPULATION_IT = 1000;
     public static int GENERATIONS = 10;
     public static double MUTATION_PROBABILITY;
     public static double MUTATION_INCREMENT;
@@ -27,10 +26,25 @@ public class Genetic implements Algorithm {
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
 
-        List<BitSet> population = PopulationGenerator.generate(inputProducts);
+        List<List<List<Product>>> population = PopulationGenerator.generate(inputProducts);
+
+
+        MUTATION_PROBABILITY = (double) 1 / (double) inputProducts.size();
+        MUTATION_INCREMENT = (double) 1 / (double) inputProducts.size();
+        MAX_MUTATION_PROBABILITY = (double) 20 / (double) inputProducts.size();
+        SHUFFLE_PROBABILITY = (double) 20 / (double) inputProducts.size();
 
         return null;
 
-
     }
+
+    private List<Product> runAlgorithm(List population) {
+
+        return null;
+    }
+
+    private int fitness(BitSet individual) {
+        return 0;
+    }
+
 }
