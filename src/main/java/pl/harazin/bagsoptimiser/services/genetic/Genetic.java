@@ -14,6 +14,7 @@ public class Genetic implements Algorithm {
     public static int REPRODUCTIONS = 1000;
     public static int GENERATIONS = 10;
     public static double MUTATION_PROBABILITY = 0.001;
+    public static double CROSSOVER_PROBABILITY = 0.9;
 
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
@@ -30,9 +31,11 @@ public class Genetic implements Algorithm {
             List<List<List<Product>>> reproductivePopulation = new ArrayList(population.subList(0, REPRODUCTIVE_POPULATION - 1));
             //reproduction
             for (int j = 0; j < REPRODUCTIONS; j++) {
-                val parent1 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
-                val parent2 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
-                population.addAll(onePointCrossover(parent1, parent2, inputProducts));
+                if (rand.nextDouble() <= CROSSOVER_PROBABILITY) {
+                    val parent1 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
+                    val parent2 = reproductivePopulation.get(rand.nextInt(reproductivePopulation.size()));
+                    population.addAll(onePointCrossover(parent1, parent2, inputProducts));
+                }
             }
             //mutation
             for (List<List<Product>> ind : population) {
