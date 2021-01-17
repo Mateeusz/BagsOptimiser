@@ -17,10 +17,10 @@ public class Genetic implements Algorithm {
 
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
+        List<Product> inputClone = new ArrayList(inputProducts);
+        List<List<List<Product>>> population = PopulationGenerator.generate(inputClone);
 
-        List<List<List<Product>>> population = PopulationGenerator.generate(inputProducts);
-
-        return runAlgorithm(population, inputProducts);
+        return runAlgorithm(population, inputClone);
     }
 
     private List<List<Product>> runAlgorithm(List<List<List<Product>>> population, List<Product> inputProducts) {

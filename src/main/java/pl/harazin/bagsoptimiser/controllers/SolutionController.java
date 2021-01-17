@@ -25,28 +25,28 @@ public class SolutionController {
     private Genetic genetic;
     private Greedy greedy;
 
-    @RequestMapping(value = "/solution/bruteForce/{iterations}", method = RequestMethod.POST)
+    @RequestMapping(value = {"/solution/bruteForce", "/solution/bruteForce/{iterations}"}, method = RequestMethod.POST)
     public Response getBruteForce(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
         return getResponse(inputList, bruteForce, iterations);
     }
 
-    @RequestMapping(value = "/solution/dynamic/{iterations}", method = RequestMethod.POST)
+    @RequestMapping(value = {"/solution/dynamic", "/solution/dynamic/{iterations}"}, method = RequestMethod.POST)
     public Response getDynamic(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
         return getResponse(inputList, dynamic, iterations);
     }
 
-    @RequestMapping(value = "/solution/genetic/{iterations}", method = RequestMethod.POST)
+    @RequestMapping(value = {"/solution/genetic", "/solution/genetic/{iterations}"}, method = RequestMethod.POST)
     public Response getGenetic(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
         return getResponse(inputList, genetic, iterations);
     }
 
-    @RequestMapping(value = "/solution/greedy/{iterations}", method = RequestMethod.POST)
+    @RequestMapping(value = {"/solution/greedy", "/solution/greedy/{iterations}"}, method = RequestMethod.POST)
     public Response getGreedy(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
         return getResponse(inputList, greedy, iterations);
     }
 
     private Response getResponse(List<Product> inputList, Algorithm solver, Optional<Integer> iterations) {
-        int numOfIterations = iterations.isPresent() ? iterations.get() : 1;
+        int numOfIterations = iterations.isPresent() && iterations.get() > 0 ? iterations.get() : 1;
         float[] iterationsTimes = new float[numOfIterations];
         List<List<Product>> solution = null;
         for (int i = 0; i < numOfIterations; i++) {
@@ -54,6 +54,9 @@ public class SolutionController {
             solution = solver.solution(inputList);
             Date endTime = new Date();
             iterationsTimes[i] = endTime.getTime() - startTime.getTime();
+            if (numOfIterations - i > 1) {
+                solution = null;
+            }
         }
         return new Response(solution, iterationsTimes);
     }

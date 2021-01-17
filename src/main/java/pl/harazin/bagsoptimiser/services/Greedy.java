@@ -14,8 +14,9 @@ public class Greedy implements Algorithm {
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
         List<List<Product>> result = new ArrayList();
+        List<Product> inputClone = new ArrayList(inputProducts);
 
-        List<Product> sorted = inputProducts.stream()
+        List<Product> sorted = inputClone.stream()
                 .sorted(Comparator.comparingInt((Product::getCompareRate)))
                 .collect(Collectors.toList());
 
@@ -35,6 +36,7 @@ public class Greedy implements Algorithm {
                     break;
                 }
                 else {
+                    result.add(singleBag);
                     result.add(singleBag);
                     tempCapacity = 0;
                     tempWeight = 0;

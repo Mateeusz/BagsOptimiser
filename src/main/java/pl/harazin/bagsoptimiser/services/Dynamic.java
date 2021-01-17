@@ -32,10 +32,11 @@ public class Dynamic implements Algorithm {
 
     @Override
     public List<List<Product>> solution(List<Product> inputProducts) {
-        List<List<Product>> result = new ArrayList<>();
+        List<List<Product>> result = new ArrayList();
+        List<Product> inputClone = new ArrayList(inputProducts);
 
-        while (!inputProducts.isEmpty()) {
-            result.add(this.getProductsForBag(inputProducts));
+        while (!inputClone.isEmpty()) {
+            result.add(this.getProductsForBag(inputClone));
         }
 
         return result;
