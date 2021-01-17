@@ -38,20 +38,21 @@ public class BruteForce implements Algorithm {
     private List<Product> compute(List<Product> inputProducts, List<Product> bestList) {
         int bestWeight = 0;
         int bestCapacity = 0;
+        List<Product> inputClone = new ArrayList(inputProducts);
 
-        int allMasks = (1<<inputProducts.size());
+        int allMasks = (1<<inputClone.size());
 
         for (int i=1; i<allMasks; i++) {
             List<Product> currentBestList = new ArrayList<>();
             int currentBestWeight = 0;
             int currentBestCapacity = 0;
 
-            for (int j=0; j<inputProducts.size(); j++) {
+            for (int j=0; j<inputClone.size(); j++) {
 
                 if ((i & (1<<j)) > 0) {
-                    currentBestWeight += inputProducts.get(j).getWeight();
-                    currentBestCapacity += inputProducts.get(j).getCapacity();
-                    currentBestList.add(inputProducts.get(j));
+                    currentBestWeight += inputClone.get(j).getWeight();
+                    currentBestCapacity += inputClone.get(j).getCapacity();
+                    currentBestList.add(inputClone.get(j));
                 }
             }
 
