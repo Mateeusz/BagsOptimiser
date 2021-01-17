@@ -1,12 +1,11 @@
 package pl.harazin.bagsoptimiser.controllers;
 
 
+import com.mongodb.lang.Nullable;
+import jdk.nashorn.internal.runtime.options.Option;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.harazin.bagsoptimiser.model.Product;
 import pl.harazin.bagsoptimiser.model.Response;
 import pl.harazin.bagsoptimiser.services.*;
@@ -14,6 +13,7 @@ import pl.harazin.bagsoptimiser.services.genetic.Genetic;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -25,31 +25,36 @@ public class SolutionController {
     private Genetic genetic;
     private Greedy greedy;
 
-    @RequestMapping(value = "/solution/bruteForce", method = RequestMethod.POST)
-    public Response getBruteForce(@RequestBody List<Product> inputList) {
-        return getResponse(inputList, bruteForce);
+    @RequestMapping(value = "/solution/bruteForce/{iterations}", method = RequestMethod.POST)
+    public Response getBruteForce(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
+        return getResponse(inputList, bruteForce, iterations);
     }
 
-    @RequestMapping(value = "/solution/dynamic", method = RequestMethod.POST)
-    public Response getDynamic(@RequestBody List<Product> inputList) {
-        return getResponse(inputList, dynamic);
+    @RequestMapping(value = "/solution/dynamic/{iterations}", method = RequestMethod.POST)
+    public Response getDynamic(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
+        return getResponse(inputList, dynamic, iterations);
     }
 
-    @RequestMapping(value = "/solution/genetic", method = RequestMethod.POST)
-    public Response getGenetic(@RequestBody List<Product> inputList) {
-        return getResponse(inputList, genetic);
+    @RequestMapping(value = "/solution/genetic/{iterations}", method = RequestMethod.POST)
+    public Response getGenetic(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
+        return getResponse(inputList, genetic, iterations);
     }
 
-    @RequestMapping(value = "/solution/greedy", method = RequestMethod.POST)
-    public Response getGreedy(@RequestBody List<Product> inputList) {
-        return getResponse(inputList, greedy);
+    @RequestMapping(value = "/solution/greedy/{iterations}", method = RequestMethod.POST)
+    public Response getGreedy(@RequestBody List<Product> inputList, @PathVariable Optional<Integer> iterations) {
+        return getResponse(inputList, greedy, iterations);
     }
 
-    private Response getResponse(List<Product> inputList, Algorithm solver) {
-        Date startTime = new Date();
-        List<List<Product>> solution = solver.solution(inputList);
-        Date endTime = new Date();
-        float timeElapsed = endTime.getTime() - startTime.getTime();
-        return new Response(solution, timeElapsed);
+    private Response getResponse(List<Product> inputList, Algorithm solver, Optional<Integer> iterations) {
+        int numOfIterations = iterations.isPresent() ? iterations.get() : 1;
+        float[] iterationsTimes = new float[numOfIterations];
+        List<List<Product>> solution = null;
+        for (int i = 0; i < numOfIterations; i++) {
+            Date startTime = new Date();
+            solution = solver.solution(inputList);
+            Date endTime = new Date();
+            iterationsTimes[i] = endTime.getTime() - startTime.getTime();
+        }
+        return new Response(solution, iterationsTimes);
     }
 }
