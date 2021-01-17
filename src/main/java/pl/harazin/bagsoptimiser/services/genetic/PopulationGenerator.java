@@ -15,12 +15,12 @@ public class PopulationGenerator {
 
         Random rand = new Random();
 
-        List<List<List<Product>>> population = new ArrayList<>();
+        List<List<List<Product>>> population = new ArrayList();
 
         for (int i = 0; i < Genetic.POPULATION; i++) {
-            List<Product> productList = new ArrayList<>(inputList);
-            List<Product> bag = new ArrayList<>();
-            List<List<Product>> individual = new ArrayList<>();
+            List<Product> productList = new ArrayList(inputList);
+            List<Product> bag = new ArrayList();
+            List<List<Product>> individual = new ArrayList();
 
             int weight = 0;
             int capacity = 0;
@@ -37,7 +37,7 @@ public class PopulationGenerator {
                 } else {
                     weight = 0;
                     capacity = 0;
-                    individual.add(new ArrayList<>(bag));
+                    individual.add(new ArrayList(bag));
                     bag.clear();
                 }
             }
