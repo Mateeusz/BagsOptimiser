@@ -1,6 +1,7 @@
 package pl.harazin.bagsoptimiser.services;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import org.springframework.stereotype.Service;
 import pl.harazin.bagsoptimiser.model.Product;
@@ -12,8 +13,8 @@ import java.util.stream.Collectors;
 public class Dynamic implements Algorithm {
 
     private class DpItem {
-        public int val = 0;
-        public List<Integer> productIndices = new ArrayList<>();
+        private int val = 0;
+        private List<Integer> productIndices = new ArrayList<>();
 
         public DpItem() {}
 
@@ -45,12 +46,12 @@ public class Dynamic implements Algorithm {
             return new TreeSet();
         }
 
-        Set recursiveSet = getSums(values, starting + 1, maxSum);
+        Set<Integer> recursiveSet = getSums(values, starting + 1, maxSum);
 
-        Set newSet = new HashSet();
+        Set<Integer> newSet = new HashSet();
         int value = values.get(starting);
-        for (Object object : recursiveSet) {
-            int element = (int) object;
+        for (Integer number : recursiveSet) {
+            int element = number;
             if (element <= maxSum) {
                 newSet.add(element);
                 if (element + value <= maxSum) {
