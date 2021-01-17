@@ -73,20 +73,10 @@ public class Dynamic implements Algorithm {
         int inputSize = input.size();
         List<Product> productsForBag = new ArrayList<>();
 
-        List<Integer> allWeights = input.stream().map(x -> x.getWeight()).collect(Collectors.toList());
-        TreeSet<Integer> possibleWeightSumsSet = getSums(allWeights,0, BAG_WEIGHT);
-        Integer[] possibleWeightSums = possibleWeightSumsSet.toArray(new Integer[possibleWeightSumsSet.size()]);
-        int maxWeight = Collections.max(possibleWeightSumsSet);
-
-        List<Integer> allVolumes = input.stream().map(x -> x.getCapacity()).collect(Collectors.toList());
-        TreeSet<Integer> possibleVolumeSumsSet = getSums(allVolumes, 0, BAG_CAPACITY);
-        Integer[] possibleVolumeSums = possibleVolumeSumsSet.toArray(new Integer[possibleVolumeSumsSet.size()]);
-        int maxVolume = Collections.max(possibleVolumeSumsSet);
-
-        DpItem[][][] dpArray = new DpItem[inputSize + 1][maxWeight + 1][maxVolume + 1];
+        DpItem[][][] dpArray = new DpItem[inputSize + 1][BAG_WEIGHT + 1][BAG_CAPACITY + 1];
 
         for (int i = 0; i <= inputSize; i++) {
-            for (int j = 0; j <= maxWeight; j++) {
+            for (int j = 0; j <= BAG_WEIGHT; j++) {
                 Arrays.fill(dpArray[i][0], new DpItem());
                 Arrays.fill(dpArray[0][j], new DpItem());
                 dpArray[i][j][0] = new DpItem();
@@ -96,31 +86,19 @@ public class Dynamic implements Algorithm {
         for (int i = 1; i <= inputSize; i++) {
             int weight = input.get(i - 1).getWeight();
             int volume = input.get(i - 1).getCapacity();
-            for (int j = 1; j <= possibleWeightSums.length ; j++) {
-                int w = possibleWeightSums[j - 1];
-                for (int k = 1; k <= possibleVolumeSums.length; k++) {
-                    int v = possibleVolumeSums[k - 1];
-                    if (w < weight || v < volume || dpArray[i-1][w][v].val > dpArray[i-1][w-weight][v-i].val + 1) {
-                        dpArray[i][w][v] = dpArray[i-1][w][v];
-                    } else {
-                        dpArray[i][w][v] = new DpItem(dpArray[i-1][w-weight][v-i], i - 1);
-                    }
-                    DpItem currentItem = dpArray[i][w][v];
-                    if (j != possibleWeightSums.length) {
-                        for (int l = w ; l < possibleWeightSums[j] ; l++) {
-                            dpArray[i][l][v] = currentItem;
-                            if (k != possibleVolumeSums.length) {
-                                for (int m = v ; m < possibleVolumeSums[k] ; m++) {
-                                    dpArray[i][l][m] = currentItem;
-                                }
-                            }
-                        }
-                    }
+            for (int w = 1; w <= BAG_WEIGHT ; w++) {
+                for (int v = 1; v <= BAG_CAPACITY; v++) {
+                    if (w < weight || v < volume)
+                        dpArray[i][w][v] = dpArray[i - 1][w][v];
+                    else if (dpArray[i-1][w][v].val > dpArray[i-1][w-weight][v-volume].val + 1)
+                        dpArray[i][w][v] = dpArray[i - 1][w][v];
+                    else
+                        dpArray[i][w][v] = new DpItem(dpArray[i-1][w-weight][v-volume], i - 1);
                 }
             }
         }
 
-        List<Integer> productIndices = dpArray[inputSize][maxWeight][maxVolume].productIndices;
+        List<Integer> productIndices = dpArray[inputSize][BAG_WEIGHT][BAG_CAPACITY].productIndices;
         Collections.sort(productIndices, Collections.reverseOrder());
         for (int index : productIndices) {
             productsForBag.add(input.get(index));
