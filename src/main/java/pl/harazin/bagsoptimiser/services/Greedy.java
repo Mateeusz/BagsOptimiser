@@ -37,7 +37,6 @@ public class Greedy implements Algorithm {
                 }
                 else {
                     result.add(singleBag);
-                    result.add(singleBag);
                     tempCapacity = 0;
                     tempWeight = 0;
                     singleBag = new ArrayList();
