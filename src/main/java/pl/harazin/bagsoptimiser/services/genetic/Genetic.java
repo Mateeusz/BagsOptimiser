@@ -125,7 +125,7 @@ public class Genetic implements Algorithm {
         for (List<Product> bag : individual) {
 
             for (Product product : bag) {
-                set[Integer.parseInt(product.getId()) - 1] = bagNumber;
+                set[product.getId() - 1] = bagNumber;
             }
 
             bagNumber++;

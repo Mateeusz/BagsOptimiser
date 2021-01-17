@@ -9,14 +9,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Product {
 
     @Id
-    private String id;
+    private int id;
     private String name;
     private Integer weight;
     private Integer capacity;
 
     private Integer compareRate;
 
-    public Product(String id, String name, Integer weight, Integer capacity) {
+    public Product(int id, String name, Integer weight, Integer capacity) {
         this.id = id;
         this.name = name;
         this.weight = weight;
