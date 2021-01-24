@@ -48,16 +48,19 @@ public class SolutionController {
     private Response getResponse(List<Product> inputList, Algorithm solver, Optional<Integer> iterations) {
         int numOfIterations = iterations.isPresent() && iterations.get() > 0 ? iterations.get() : 1;
         float[] iterationsTimes = new float[numOfIterations];
+        int[] bagUsage = new int[numOfIterations];
         List<List<Product>> solution = null;
         for (int i = 0; i < numOfIterations; i++) {
             Date startTime = new Date();
             solution = solver.solution(inputList);
             Date endTime = new Date();
+            bagUsage[i] = solution.size();
             iterationsTimes[i] = endTime.getTime() - startTime.getTime();
+
             if (numOfIterations - i > 1) {
                 solution = null;
             }
         }
-        return new Response(solution, iterationsTimes);
+        return new Response(solution, iterationsTimes, bagUsage);
     }
 }
